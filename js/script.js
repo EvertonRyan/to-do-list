@@ -1,42 +1,35 @@
 document.querySelector('.add').addEventListener('click', () => {
     const task = document.querySelector('#task');
-    const taskList = document.querySelector('.task-list');
-    const addTask = document.createElement('li');
-    const txtTask = document.createElement('span');
-    txtTask.classList = 'txt-task';
-    txtTask.innerText = task.value;
-    const options = document.createElement('p');
-    options.classList = 'options';
-    const checkTask = document.createElement('span');
-    checkTask.classList = 'check-task';
-    checkTask.innerHTML = '<i class="fa-solid fa-check"></i>';
-    const removeTask = document.createElement('span');
-    removeTask.classList = 'remove-task';
-    removeTask.innerHTML = '<i class="fa-solid fa-trash"></i>';
-    if (task.value === '') {
-        alert('Escreva uma tarefa')
-    } else {
-        taskList.appendChild(addTask);
-        addTask.appendChild(txtTask);
-        addTask.appendChild(options);
-        options.appendChild(checkTask);
-        options.appendChild(removeTask);
-        task.value = '';
+    let taskValue = task.value.trim();
+
+    if (!taskValue) {
+        alert('Escreva uma tarefa');
+        return;
     }
 
-    checkTask.addEventListener('click', () => {
-        if (txtTask.style.textDecoration === 'none') {
-            txtTask.style.color = '#808080';
-            txtTask.style.textDecoration = 'line-through';
-            txtTask.style.fontStyle = 'italic';
-        } else {
-            txtTask.style.color = '#FFF';
-            txtTask.style.textDecoration = 'none';
-            txtTask.style.fontStyle = 'normal';
-        }
-    })
+    const taskItem = document.createElement('li');
+    taskItem.innerHTML = `
+    <span class="txt-task">${taskValue}</span>
+    <p class="options">
+        <span class="check-task"><i class="fa-solid fa-check"></i></span>
+        <span class="remove-task"><i class="fa-solid fa-trash"></i></span>
+    </p>
+    `;
 
-    removeTask.addEventListener('click', () => {
-        taskList.removeChild(addTask);
-    })
+    const taskList = document.querySelector('.task-list');
+    taskList.appendChild(taskItem);
+    task.value = '';
+})
+
+document.querySelector('.task-list').addEventListener('click', (event) => {
+    if (event.target.closest('.check-task')) {
+        const txtTask = event.target.closest('li').querySelector('.txt-task');
+        txtTask.style.color = txtTask.style.color === 'rgb(255, 255, 255)' ? '#808080' : '#FFF';
+        txtTask.style.textDecoration = txtTask.style.textDecoration === 'none' ? 'line-through' : 'none';
+        txtTask.style.fontStyle = txtTask.style.fontStyle === 'normal' ? 'italic' : 'normal';
+    }
+
+    if (event.target.closest('.remove-task')) {
+        event.target.closest('li').remove();
+    }
 })
